@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.test import Client, TestCase
 from django.urls import reverse
 from posts.constants import FIRST_TEN
-from posts.models import Comment, Follow, Group, Post, User
+from posts.models import Follow, Group, Post, User
 
 
 class PostViewsTests(TestCase):
@@ -21,14 +21,12 @@ class PostViewsTests(TestCase):
                                           description='test2',)
         cls.author = User.objects.create(username='Author')
 
-        cls.small_gif = (            
-             b'\x47\x49\x46\x38\x39\x61\x02\x00'
-             b'\x01\x00\x80\x00\x00\x00\x00\x00'
-             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-             b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-             b'\x0A\x00\x3B'
-        )
+        cls.small_gif = (b'\x47\x49\x46\x38\x39\x61\x02\x00'
+                         b'\x01\x00\x80\x00\x00\x00\x00\x00'
+                         b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+                         b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+                         b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+                         b'\x0A\x00\x3B')
         uploaded = SimpleUploadedFile(
             name='small.gif',
             content=cls.small_gif,
@@ -45,7 +43,6 @@ class PostViewsTests(TestCase):
             ))
         cls.posts = Post.objects.bulk_create(bulk_list)
         cache.clear()
-
 
     def setUp(self):
         self.guest_client = Client()
@@ -192,7 +189,7 @@ class PostViewsTests(TestCase):
                                            kwargs={'slug': 'test2'}))
         self.assertNotIn(one_post, response.context['posts'])
 
-    def test_image_shown_index(self):  
+    def test_image_shown_index(self):
         one_post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:index'))
         test_post = response.context['post_list'][10]
@@ -201,15 +198,15 @@ class PostViewsTests(TestCase):
     def test_image_shown_profile(self):
         one_post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:profile',
-                                                      kwargs={'username': 'Author'}))
+                                              kwargs={'username': 'Author'}))
         test_post = response.context['post_list'][10]
         self.assertEqual(one_post.image, test_post.image)
 
     def test_image_shown_group_list(self):
-       one_post = get_object_or_404(Post, id='1')
-       response = self.authorized_client.get(reverse('posts:index'))
-       test_post = response.context['post_list'][10]
-       self.assertEqual(one_post.image, test_post.image)
+        one_post = get_object_or_404(Post, id='1')
+        response = self.authorized_client.get(reverse('posts:index'))
+        test_post = response.context['post_list'][10]
+        self.assertEqual(one_post.image, test_post.image)
 
     def test_image_shown_post_detail(self):
         one_post = get_object_or_404(Post, id='1')
@@ -217,7 +214,7 @@ class PostViewsTests(TestCase):
                                                       kwargs={'post_id': 1}))
         test_post = response.context['one_post']
         self.assertEqual(one_post.image, test_post.image)
-    
+
     def test_comments_shown_post_detail(self):
         one_post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:post_detail',
@@ -226,10 +223,10 @@ class PostViewsTests(TestCase):
         self.assertEqual(one_post.comments, test_post.comments)
 
     def test_cache_works(self):
-        response = self.authorized_client.get(reverse('posts:index'))
+        self.authorized_client.get(reverse('posts:index'))
         with self.assertNumQueries(0):
             Post.objects.select_related('author', 'group')
-    
+
     def test_cache_after_delete(self):
         page_first = self.authorized_client.get(reverse('posts:index'))
         Post.objects.create(text='SSS', author=self.user, group=self.group)
@@ -244,8 +241,8 @@ class PostViewsTests(TestCase):
         Follow.objects.create(author=author, user=self.user)
         post_list = Post.objects.filter(author__following__user=self.user)
         response = self.authorized_client.get(reverse('posts:follow_index'))
-        self.assertListEqual(list(post_list), list(response.context['post_list']))
+        self.assertListEqual(list(post_list),
+                             list(response.context['post_list']))
         unfollow = Follow.objects.filter(author=author, user=self.user)
         unfollow.delete()
         self.assertNotIn(unfollow, list(response.context['post_list']))
-
