@@ -108,11 +108,11 @@ class CommentCreateFormTests(TestCase):
     def test_comments_create_only_auth(self):
         response = self.authorized_client.get(reverse('posts:add_comment',
                                                       kwargs={'post_id':
-                                                      f'{self.post.pk}'
-                                                                       }))
-        self.assertRedirects(response,reverse('posts:post_detail',
+                                                              f'{self.post.pk}'
+                                                              }))
+        self.assertRedirects(response, reverse('posts:post_detail',
                                                kwargs={'post_id':
-                                              f'{self.post.pk}'}))
+                                                       f'{self.post.pk}'}))
 
     def test_comments_post_detail_shown(self):
         comment = Comment.objects.create(post=self.post,
@@ -123,12 +123,12 @@ class CommentCreateFormTests(TestCase):
         }
         self.authorized_client.post(
             reverse('posts:add_comment', kwargs={
-                                                 'post_id': f'{self.post.pk}'}),
-                                                  data=form_data,)
-        response = self.authorized_client.get(reverse(
-                                                      'posts:post_detail',
-                                                      kwargs={
-                                                      'post_id': f'{self.post.pk}'}))
+                'post_id': f'{self.post.pk}'}),
+            data=form_data,)
+        response = self.authorized_client.get(
+            reverse(
+                'posts:post_detail', kwargs={
+                    'post_id': f'{self.post.pk}'}))
         self.assertEqual(comment, response.context['comments'][0])
         self.assertEqual(form_data['text'],
                          response.context['comments'][1].text)
