@@ -4,6 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import get_object_or_404
 from django.test import Client, TestCase
 from django.urls import reverse
+
 from posts.constants import FIRST_TEN
 from posts.models import Follow, Group, Post, User
 

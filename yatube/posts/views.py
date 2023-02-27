@@ -27,10 +27,8 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     page_obj = paginator(request, post_list)
-    following = False
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(user=request.user,
-                                          author=author).exists()
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user, author=author).exists()
     context = {'author': author, 'page_obj': page_obj, 'post_list': post_list,
                'following': following}
     return render(request, 'posts/profile.html', context)
@@ -54,8 +52,6 @@ def post_create(request):
 
         if form.is_valid():
             new_post = form.save(commit=False)
-            new_post.text = form.cleaned_data['text']
-            new_post.group = form.cleaned_data['group']
             new_post.author = request.user
             new_post.save()
 
@@ -122,6 +118,7 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    unfollow = Follow.objects.filter(author=author, user=request.user)
-    unfollow.delete()
+    if Follow.objects.filter(author=author, user=request.user).exists():
+        unfollow = Follow.objects.filter(author=author, user=request.user)
+        unfollow.delete()
     return redirect('posts:follow_index')

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
+
 from posts.models import Group, Post, User
 
 
