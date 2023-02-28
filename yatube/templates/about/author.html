@@ -1,10 +1,39 @@
-<!-- templates/about/author.html -->
-{% extends "base.html" %}
-{% block title %}Об авторе проекта{% endblock %}
+{% extends 'base.html' %}
 {% block content %}
-<h1>Привет, я автор</h1>
-<p>
-  Тут я размещу информацию о себе, используя свои умения верстать.
-  Картинки, блоки, элементы бустрап. А может быть, просто напишу несколько абзацев текста. 
-</p>
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+</head>
+
+<div class = "about-wrapper">
+  <div class = "about-left">
+    <div class = "about-left-content">
+      <div>
+        <h2>juzessa</h2>
+        <h5>Python Developer</h5>
+        </div>
+  
+
+      <div class = "about-btns">
+        <button type = "button" class = "btn btn-pink">resume / CV</button>
+      </div>
+      <ul class = "icons">
+        <li><i class = "fab fa-linkedin"> <a href="https://www.linkedin.com/feed/">linkedin</a></i></li>
+        <li><i class = "fab fa-github"> <a href="https://github.com/juzessa">github</a></i></li>
+      </ul>
+    </div>
+    
+  </div>
+  <div class = "about-right">
+
+    <div class = "about-para">
+    </div>
+    <div class="credit">Made with <span style="color:tomato">❤</span> by <a href="https://github.com/juzessa">juzessa</a></div>
+  </div>
+</div>
+
 {% endblock %}
