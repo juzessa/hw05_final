@@ -25,7 +25,7 @@ def group_posts(request, slug):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    post_list = Post.objects.filter(author=author)
+    post_list = author.posts.all()
     page_obj = paginator(request, post_list)
     following = request.user.is_authenticated and Follow.objects.filter(
         user=request.user, author=author).exists()
@@ -35,11 +35,11 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    one_post = get_object_or_404(Post, pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     author = Post.objects.select_related('author', 'group')
     form = CommentForm()
-    comments = one_post.comments.all()
-    context = {'one_post': one_post, 'author': author, 'form': form,
+    comments = post.comments.all()
+    context = {'post': post, 'author': author, 'form': form,
                'comments': comments}
     return render(request, 'posts/post_detail.html', context)
 

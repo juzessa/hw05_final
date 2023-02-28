@@ -110,11 +110,11 @@ class PostViewsTests(TestCase):
         self.assertQuerysetEqual(test_post, posts, transform=lambda x: x)
 
     def test_post_detail_page_shows_correct_context(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:post_detail',
                                                       kwargs={'post_id': 1}))
-        test_post = response.context['one_post']
-        self.assertEqual(one_post, test_post)
+        test_post = response.context['post']
+        self.assertEqual(post, test_post)
 
     def test_post_create_page_shows_correct_context(self):
         response = self.authorized_client.get(reverse('posts:post_create'))
@@ -172,7 +172,7 @@ class PostViewsTests(TestCase):
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_group_added(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response_dict = {reverse('posts:index'): 'post_list',
                          reverse('posts:group_list',
                          kwargs={'slug': 'test'}): 'posts',
@@ -181,47 +181,47 @@ class PostViewsTests(TestCase):
         for page, context_variable in response_dict.items():
             with self.subTest(page=page):
                 response = self.client.get(page)
-                if one_post.group:
-                    self.assertIn(one_post, response.context[context_variable])
+                if post.group:
+                    self.assertIn(post, response.context[context_variable])
 
     def test_group_not_added(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.client.get(reverse('posts:group_list',
                                            kwargs={'slug': 'test2'}))
-        self.assertNotIn(one_post, response.context['posts'])
+        self.assertNotIn(post, response.context['posts'])
 
     def test_image_shown_index(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:index'))
         test_post = response.context['post_list'][10]
-        self.assertEqual(one_post.image, test_post.image)
+        self.assertEqual(post.image, test_post.image)
 
     def test_image_shown_profile(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:profile',
                                               kwargs={'username': 'Author'}))
         test_post = response.context['post_list'][10]
-        self.assertEqual(one_post.image, test_post.image)
+        self.assertEqual(post.image, test_post.image)
 
     def test_image_shown_group_list(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:index'))
         test_post = response.context['post_list'][10]
-        self.assertEqual(one_post.image, test_post.image)
+        self.assertEqual(post.image, test_post.image)
 
     def test_image_shown_post_detail(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:post_detail',
                                                       kwargs={'post_id': 1}))
-        test_post = response.context['one_post']
-        self.assertEqual(one_post.image, test_post.image)
+        test_post = response.context['post']
+        self.assertEqual(post.image, test_post.image)
 
     def test_comments_shown_post_detail(self):
-        one_post = get_object_or_404(Post, id='1')
+        post = get_object_or_404(Post, id='1')
         response = self.authorized_client.get(reverse('posts:post_detail',
                                                       kwargs={'post_id': 1}))
-        test_post = response.context['one_post']
-        self.assertEqual(one_post.comments, test_post.comments)
+        test_post = response.context['post']
+        self.assertEqual(post.comments, test_post.comments)
 
     def test_cache_works(self):
         self.authorized_client.get(reverse('posts:index'))
